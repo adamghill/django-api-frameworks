@@ -1,16 +1,14 @@
+from datetime import datetime
 from typing import Annotated
 
 from database import get_db
-from services.cars import CarService
+from fastapi import APIRouter, Depends
+from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from fastapi import APIRouter, Depends
+from car.service import CarService
 
 router = APIRouter()
-
-from datetime import datetime
-
-from pydantic import BaseModel
 
 
 class CarSchema(BaseModel):

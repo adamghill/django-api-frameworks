@@ -3,12 +3,21 @@ name = "fastapi-example"
 version = "0.1.0"
 requires-python = "==3.14.*"
 dependencies = [
-    "fastapi[standard]==0.115.6",
-    "greenlet>=3.2",
-    "sqlalchemy==2.0.37",
-    "asyncpg==0.30.0",
-    "psycopg_pool==3.2.4",
+    "fastapi[standard]==0.128.0",
+    "greenlet>=3.3.0",
+    "sqlalchemy==2.0.45",
+    "asyncpg==0.31.0",
+    "psycopg_pool==3.3.0",
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+    "pytest-asyncio>=1.3.0",
+]
+
+[tool.pytest]
+asyncio_mode = "auto"
 
 [tool.uv]
 package = false

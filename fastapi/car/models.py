@@ -1,7 +1,7 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
-from sqlalchemy.types import DECIMAL
 from database import Base
+from sqlalchemy import Column, DateTime, ForeignKey, Integer, String
 from sqlalchemy.sql import func
+from sqlalchemy.types import DECIMAL
 
 
 class CarModel(Base):
