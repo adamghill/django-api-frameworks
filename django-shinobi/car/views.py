@@ -32,11 +32,14 @@ def cars_sync_without_schema(request: HttpRequest):
 
 @router.get("/cars/async-with-schema/", response=dict[str, list[ListCarResponseItem]])
 async def cars_async_with_schema(request: HttpRequest):
-    return {
-        "results": [car async for car in Car.objects.with_annotations().aiterator()]
-    }
+    return {"results": [car async for car in Car.objects.with_annotations().aiterator()]}
 
 
 @router.get("/cars/async-without-schema/", response=dict[str, list[dict]])
 async def cars_async_without_schema(request: HttpRequest):
     return {"results": [car async for car in Car.objects.as_dicts().aiterator()]}
+
+
+@router.get("/cars/", response=dict[str, list[dict]])
+async def cars(request: HttpRequest):
+    return await cars_async_without_schema(request)

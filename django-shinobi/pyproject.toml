@@ -12,5 +12,14 @@ dependencies = [
     "django-shinobi==1.4.0",
 ]
 
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+    "pytest-django>=4.11.1",
+]
+
+[tool.pytest]
+DJANGO_SETTINGS_MODULE = "config.settings"
+
 [tool.uv]
 package = false
