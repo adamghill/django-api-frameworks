@@ -10,68 +10,166 @@ class ApiLoadTest(FastHttpUser):
     wait_time = between(1, 3)  # Time between tasks (1 to 3 seconds)
     host = "http://localhost"
 
-    @tag("drf_with_serializer")
+    # django
+    @tag("django")
     @task(1)
-    def test_drf_with_serializer(self):
-        with task_lock:  # Only one task can run at a time due to this lock
-            self.client.get("http://django-drf:8000/drf/with-serializer/")
-
-    @tag("drf_without_serializer")
-    @task(1)
-    def test_drf_without_serializer(self):
+    def test_django_api_cars_orjson_sync(self):
         with task_lock:
-            self.client.get("http://django-drf:8000/drf/without-serializer/")
+            self.client.get("http://django:8000/api/cars-orjson-sync/")
 
-    @tag("ninja_with_schema")
+    @tag("django")
     @task(1)
-    def test_ninja_with_schema(self):
+    def test_django_api_cars_orjson_async(self):
         with task_lock:
-            self.client.get("http://django-ninja:8001/ninja/with-schema/")
+            self.client.get("http://django:8000/api/cars-orjson-async/")
 
-    @tag("ninja_without_schema")
+    @tag("django")
     @task(1)
-    def test_ninja_without_schema(self):
+    def test_django_api_cars_streaming(self):
         with task_lock:
-            self.client.get("http://django-ninja:8001/ninja/without-schema/")
+            self.client.get("http://django:8000/api/cars-streaming/")
 
-    @tag("fastapi_with_pydantic")
+    @tag("django")
     @task(1)
-    def test_fastapi_with_pydantic(self):
+    def test_django_api_cars_asyncpg(self):
         with task_lock:
-            self.client.get("http://fastapi:8002/fastapi/")
+            self.client.get("http://django:8000/api/cars-asyncpg/")
 
-    @tag("django_rapid")
+    @tag("django")
     @task(1)
-    def test_django_rapid(self):
+    def test_django_api_cars_msgspec(self):
         with task_lock:
-            self.client.get("http://django-rapid:8004/api/cars/")
+            self.client.get("http://django:8000/api/cars-msgspec/")
 
-    @tag("django_bolt")
+    @tag("django")
     @task(1)
-    def test_django_bolt(self):
+    def test_django_api_cars_json(self):
         with task_lock:
-            self.client.get("http://django-bolt:8005/api/cars/")
+            self.client.get("http://django:8000/api/cars-json/")
+
+    @tag("django")
+    @task(1)
+    def test_django_api_cars_raw_sync(self):
+        with task_lock:
+            self.client.get("http://django:8000/api/cars-raw-sync/")
+
+    @tag("django")
+    @task(1)
+    def test_django_api_cars_postgres_json(self):
+        with task_lock:
+            self.client.get("http://django:8000/api/cars-postgres-json/")
+
+    @tag("django")
+    @task(1)
+    def test_django_api_cars_pydantic(self):
+        with task_lock:
+            self.client.get("http://django:8000/api/cars-pydantic/")
+
+    # django-ninja
+    @tag("django-ninja")
+    @task(1)
+    def test_django_ninja_api_cars_sync_with_schema(self):
+        with task_lock:
+            self.client.get("http://django-ninja:8000/api/cars/sync-with-schema/")
+
+    @tag("django-ninja")
+    @task(1)
+    def test_django_ninja_api_cars_sync_without_schema(self):
+        with task_lock:
+            self.client.get("http://django-ninja:8000/api/cars/sync-without-schema/")
+
+    @tag("django-ninja")
+    @task(1)
+    def test_django_ninja_api_cars_async_with_schema(self):
+        with task_lock:
+            self.client.get("http://django-ninja:8000/api/cars/async-with-schema/")
+
+    @tag("django-ninja")
+    @task(1)
+    def test_django_ninja_api_cars_async_without_schema(self):
+        with task_lock:
+            self.client.get("http://django-ninja:8000/api/cars/async-without-schema/")
+
+    # django-shinobi
+    @tag("django-shinobi")
+    @task(1)
+    def test_django_shinobi_api_cars_sync_with_schema(self):
+        with task_lock:
+            self.client.get("http://django-shinobi:8000/api/cars/sync-with-schema/")
+
+    @tag("django-shinobi")
+    @task(1)
+    def test_django_shinobi_api_cars_sync_without_schema(self):
+        with task_lock:
+            self.client.get("http://django-shinobi:8000/api/cars/sync-without-schema/")
+
+    @tag("django-shinobi")
+    @task(1)
+    def test_django_shinobi_api_cars_async_with_schema(self):
+        with task_lock:
+            self.client.get("http://django-shinobi:8000/api/cars/async-with-schema/")
+
+    @tag("django-shinobi")
+    @task(1)
+    def test_django_shinobi_api_cars_async_without_schema(self):
+        with task_lock:
+            self.client.get("http://django-shinobi:8000/api/cars/async-without-schema/")
+
+    # django-rapid
+    @tag("django-rapid")
+    @task(1)
+    def test_django_rapid_api_cars(self):
+        with task_lock:
+            self.client.get("http://django-rapid:8000/api/cars/")
+
+    # django-bolt
+    @tag("django-bolt")
+    @task(1)
+    def test_django_bolt_api_cars_serialized(self):
+        with task_lock:
+            self.client.get("http://django-bolt:8000/api/cars-serialized/")
+
+    @tag("django-bolt")
+    @task(1)
+    def test_django_bolt_api_cars_dicts(self):
+        with task_lock:
+            self.client.get("http://django-bolt:8000/api/cars-dicts/")
+
+    # djangorestframework
+    @tag("djangorestframework")
+    @task(1)
+    def test_djangorestframework_api_cars_serialized(self):
+        with task_lock:
+            self.client.get("http://djangorestframework:8000/api/cars-serialized/")
+
+    @tag("djangorestframework")
+    @task(1)
+    def test_djangorestframework_api_cars_orjson(self):
+        with task_lock:
+            self.client.get("http://djangorestframework:8000/api/cars-orjson/")
+
+    @tag("djangorestframework")
+    @task(1)
+    def test_djangorestframework_api_cars_dict_orjson(self):
+        with task_lock:
+            self.client.get("http://djangorestframework:8000/api/cars-dict-orjson/")
+
+    # djrest2
+    @tag("djrest2")
+    @task(1)
+    def test_djrest2_api_cars_json(self):
+        with task_lock:
+            self.client.get("http://djrest2:8000/api/cars-json/")
 
     @tag("djrest2")
     @task(1)
-    def test_djrest2(self):
+    def test_djrest2_api_cars_orjson(self):
         with task_lock:
-            self.client.get("http://djrest2:8006/api/cars/")
+            self.client.get("http://djrest2:8000/api/cars-orjson/")
 
-    @tag("shinobi_with_schema")
+    # fastapi
+    @tag("fastapi")
     @task(1)
-    def test_django_shinobi(self):
+    def test_fastapi_api_cars(self):
         with task_lock:
-            self.client.get("http://django-shinobi:8007/ninja/with-schema/")
-
-    @tag("shinobi_without_schema")
-    @task(1)
-    def test_django_shinobi(self):
-        with task_lock:
-            self.client.get("http://django-shinobi:8007/ninja/without-schema/")
-
-    @tag("fast_drf")
-    @task(1)
-    def test_fast_drf(self):
-        with task_lock:
-            self.client.get("http://fast-drf:8008/api/v1/cars/")
+            self.client.get("http://fastapi:8000/api/cars/")
