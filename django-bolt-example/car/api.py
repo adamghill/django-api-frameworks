@@ -3,13 +3,13 @@ from typing import Any
 
 from django_bolt import BoltAPI
 from django_bolt.serializers import Serializer
-
+import msgspec
 from car.models import Car
 
 api = BoltAPI()
 
 
-class CarSerializer(Serializer):
+class CarSerializer(msgspec.Struct):
     id: int
     vin: str
     owner: str
@@ -19,6 +19,7 @@ class CarSerializer(Serializer):
     car_model_name: str
     car_model_year: int
     color: str
+
 
 
 @api.get("/cars")
@@ -31,7 +32,17 @@ async def cars_serialized():
     cars = []
 
     async for car in Car.objects.with_annotations():
-        cars.append(CarSerializer.from_model(car))
+        cars.append(CarSerializer(
+            id=car.id,
+            vin=car.vin,
+            owner=car.owner,
+            created_at=car.created_at,
+            updated_at=car.updated_at,
+            car_model_id=car.car_model_id,
+            car_model_name=car.car_model_name,
+            car_model_year=car.car_model_year,
+            color=car.color,
+        ))
 
     return {"results": cars}
 
@@ -40,7 +51,7 @@ async def cars_serialized():
 async def cars_as_dicts():
     cars = []
 
-    async for car_dict in Car.objects.as_dicts().aiterator():
+    async for car_dict in Car.objects.as_dicts():
         cars.append(car_dict)
 
     return {"results": cars}
