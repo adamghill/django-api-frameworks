@@ -29,22 +29,9 @@ async def cars():
 
 @api.get("/cars-serialized")
 async def cars_serialized():
-    cars = []
 
-    async for car in Car.objects.with_annotations():
-        cars.append(CarSerializer(
-            id=car.id,
-            vin=car.vin,
-            owner=car.owner,
-            created_at=car.created_at,
-            updated_at=car.updated_at,
-            car_model_id=car.car_model_id,
-            car_model_name=car.car_model_name,
-            car_model_year=car.car_model_year,
-            color=car.color,
-        ))
-
-    return {"results": cars}
+    cars = [car async for car in Car.objects.as_dicts()]              
+    return {"results": msgspec.convert(cars, list[CarSerializer])}
 
 
 @api.get("/cars-dicts")
