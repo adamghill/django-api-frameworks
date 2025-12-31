@@ -76,8 +76,6 @@ API_CONFIGS = {
         "base_url": "http://localhost:8007",
         "endpoints": [
             "/api/cars-json/",
-            "/api/cars-orjson/",
-            # "/api/cars-model-to-dict/",
             "/api/cars-queryset-as-dicts/",
         ],
     },
