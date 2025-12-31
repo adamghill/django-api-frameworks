@@ -1,0 +1,28 @@
+[project]
+name = "django-hatchway-example"
+version = "0.1.0"
+requires-python = "==3.14.*"
+dependencies = [
+    "faker==39.0.0",
+    "uvicorn[standard]",
+    "orjson==3.11.5",
+    "psycopg[binary]==3.3.2",
+    "asyncpg==0.31.0",
+    "msgspec==0.20.0",
+    "pydantic==2.12.5",
+    # library under test
+    "Django==6.0",
+    "django-hatchway",
+]
+
+[dependency-groups]
+dev = ["pytest>=9.0.2", "pytest-django>=4.11.1"]
+
+[tool.pytest]
+DJANGO_SETTINGS_MODULE = "config.settings"
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+django-hatchway = { git = "https://github.com/Tobi-De/django-hatchway.git", branch = "main" }

@@ -65,6 +65,13 @@ class ApiLoadTest(FastHttpUser):
         with task_lock:
             self.client.get("http://django:8000/api/cars-pydantic/")
 
+    # django-hatchway
+    @tag("django-hatchway")
+    @task(1)
+    def test_django_hatchway_api_cars(self):
+        with task_lock:
+            self.client.get("http://django-hatchway:8000/api/cars/")
+
     # django-ninja
     @tag("django-ninja")
     @task(1)
