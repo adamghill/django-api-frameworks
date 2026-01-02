@@ -35,6 +35,24 @@ services:
     networks:
       - django-api-frameworks
   
+  django-hatchway:
+    container_name: django-hatchway
+    build:
+      context: .
+      dockerfile: ./django-hatchway-example/Dockerfile
+    ports:
+      - "7999:8000"
+    environment:
+      - DEBUG=False
+    volumes:
+      - ./django-hatchway-example:/app
+    command: bash ./wait_for_db.sh uv run uvicorn config.asgi:application --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - db
+    networks:
+      - django-api-frameworks
+  
+
   django-ninja:
     container_name: django-ninja
     build:

@@ -24,6 +24,10 @@ up *ARGS='':
 django:
   docker-compose up -d django
 
+# Start Django hatchway container
+django-hatchway:
+  docker-compose up -d django-hatchway
+
 # Start Django DRF container
 djangorestframework:
   docker-compose up -d djangorestframework

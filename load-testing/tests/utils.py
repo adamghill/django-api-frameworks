@@ -33,6 +33,12 @@ API_CONFIGS = {
             "/api/cars-pydantic/",
         ],
     },
+    "django-hatchway": {
+        "base_url": "http://localhost:7999",
+        "endpoints": [
+            "/api/cars/",
+        ],
+    },
     "django-ninja": {
         "base_url": "http://localhost:8002",
         "endpoints": [
