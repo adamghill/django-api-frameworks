@@ -12,6 +12,12 @@ urlpatterns = [
     path("cars-raw-sync/", views.cars_raw_sync),
     path("cars-postgres-json/", views.cars_postgres_json),
     path("cars-pydantic/", views.cars_pydantic),
+    path("json-sync/", views.json_sync),
+    path("json-orjson-sync/", views.json_orjson_sync),
+    path("json-msgspec-sync/", views.json_msgspec_sync),
+    path("json-async/", views.json_async),
+    path("json-orjson-async/", views.json_orjson_async),
+    path("json-msgspec-async/", views.json_msgspec_async),
 ]
 
 # For load-testing

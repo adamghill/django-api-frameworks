@@ -4,10 +4,12 @@ version = "0.1.0"
 requires-python = "==3.14.*"
 dependencies = [
     "faker==39.0.0",
-    "uvicorn[standard]",
-    "orjson==3.11.5",
+    "uvicorn[standard]==0.40.0",
+    "granian[reload,uvloop]==2.6.0",
+    "django-rsgi",
     "psycopg[binary]==3.3.2",
     "asyncpg==0.31.0",
+    "orjson==3.11.5",
     "msgspec==0.20.0",
     "pydantic==2.12.5",
     # library under test
@@ -19,6 +21,9 @@ dev = [
     "pytest>=9.0.2",
     "pytest-django>=4.11.1",
 ]
+
+[tool.uv.sources]
+django-rsgi = { git = "https://github.com/adamghill/django-rsgi" }
 
 [tool.pytest]
 DJANGO_SETTINGS_MODULE = "config.settings"

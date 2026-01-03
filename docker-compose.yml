@@ -18,8 +18,8 @@ services:
       timeout: 5s
       retries: 5
 
-  django:
-    container_name: django
+  django-wsgi:
+    container_name: django-wsgi
     build:
       context: .
       dockerfile: ./django-example/Dockerfile
@@ -29,7 +29,58 @@ services:
       - DEBUG=False
     volumes:
       - ./django-example:/app
-    command: bash ./wait_for_db.sh uv run uvicorn config.asgi:application --host 0.0.0.0 --port 8000 --reload
+    command: bash ./wait_for_db.sh uv run granian --interface wsgi --loop uvloop --workers 4 --no-ws config.wsgi:application --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - db
+    networks:
+      - django-api-frameworks
+  
+  django-asgi:
+    container_name: django-asgi
+    build:
+      context: .
+      dockerfile: ./django-example/Dockerfile
+    ports:
+      - "8002:8000"
+    environment:
+      - DEBUG=False
+    volumes:
+      - ./django-example:/app
+    command: bash ./wait_for_db.sh uv run granian --interface asgi --loop uvloop --workers 4 --no-ws config.asgi:application --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - db
+    networks:
+      - django-api-frameworks
+  
+  django-rsgi:
+    container_name: django-rsgi
+    build:
+      context: .
+      dockerfile: ./django-example/Dockerfile
+    ports:
+      - "8003:8000"
+    environment:
+      - DEBUG=False
+    volumes:
+      - ./django-example:/app
+    command: bash ./wait_for_db.sh uv run granian --interface rsgi --loop uvloop --workers 4 --no-ws config.rsgi:application --host 0.0.0.0 --port 8000 --reload
+    depends_on:
+      - db
+    networks:
+      - django-api-frameworks
+  
+  django-uvicorn:
+    container_name: django-uvicorn
+    build:
+      context: .
+      dockerfile: ./django-example/Dockerfile
+    ports:
+      - "8004:8000"
+    environment:
+      - DEBUG=False
+    volumes:
+      - ./django-example:/app
+    command: bash ./wait_for_db.sh uv run uvicorn config.asgi:application --host 0.0.0.0 --port 8000 --workers 4
     depends_on:
       - db
     networks:
@@ -41,7 +92,7 @@ services:
       context: .
       dockerfile: ./django-ninja-example/Dockerfile
     ports:
-      - "8002:8000"
+      - "8010:8000"
     environment:
       - DEBUG=False
     volumes:
@@ -58,7 +109,7 @@ services:
       context: .
       dockerfile: ./django-shinobi-example/Dockerfile
     ports:
-      - "8003:8000"
+      - "8011:8000"
     environment:
       - DEBUG=False
     volumes:
@@ -75,7 +126,7 @@ services:
       context: .
       dockerfile: ./django-rapid-example/Dockerfile
     ports:
-      - "8004:8000"
+      - "8012:8000"
     environment:
       - DEBUG=False
     volumes:
@@ -92,7 +143,7 @@ services:
       context: .
       dockerfile: ./django-bolt-example/Dockerfile
     ports:
-      - "8005:8000"
+      - "8013:8000"
     environment:
       - DEBUG=False
     volumes:
@@ -109,7 +160,7 @@ services:
       context: .
       dockerfile: ./djangorestframework-example/Dockerfile
     ports:
-      - "8006:8000"
+      - "8014:8000"
     environment:
       - DEBUG=False
     volumes:
@@ -126,7 +177,7 @@ services:
       context: .
       dockerfile: ./djrest2-example/Dockerfile
     ports:
-      - "8007:8000"
+      - "8015:8000"
     environment:
       - DEBUG=False
     volumes:
@@ -143,12 +194,12 @@ services:
       context: .
       dockerfile: ./fastapi-example/Dockerfile
     ports:
-      - "8099:8000"
+      - "8030:8000"
     environment:
       - DEBUG=False
     volumes:
       - ./fastapi-example:/app
-    command: uv run fastapi dev main.py --host 0.0.0.0 --port 8000
+    command: bash ./wait_for_db.sh uv run fastapi run main.py --host 0.0.0.0 --port 8000
     depends_on:
       - db
     networks:

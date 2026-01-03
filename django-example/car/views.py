@@ -1,4 +1,5 @@
 import json
+from functools import lru_cache
 
 import msgspec
 import orjson
@@ -10,6 +11,52 @@ from django.http import HttpResponse, StreamingHttpResponse
 from car.asyncpg_manager import AsyncpgManager
 from car.models import Car
 
+
+@lru_cache
+def get_complex_json():
+    print("Generating complex JSON...")
+    results = []
+
+    for idx in range(1, 10000):
+        results.append(
+            {
+                "id": idx,
+                "vin": "1234567890",
+                "owner": "John Doe",
+                "created_at": "2022-01-01T00:00:00Z",
+                "updated_at": "2022-01-01T00:00:00Z",
+                "car_model_id": 1,
+                "car_model_name": "Model S",
+                "car_model_year": 2022,
+                "color": "Red",
+            }
+        )
+
+    return {"results": results}
+
+
+def json_sync(request):
+    return HttpResponse(content=json.dumps(get_complex_json()), content_type="application/json")
+
+
+def json_orjson_sync(request):
+    return HttpResponse(content=orjson.dumps(get_complex_json()), content_type="application/json")
+
+
+def json_msgspec_sync(request):
+    return HttpResponse(content=msgspec.json.encode(get_complex_json()), content_type="application/json")
+
+
+async def json_async(request):
+    return HttpResponse(content=json.dumps(get_complex_json()), content_type="application/json")
+
+
+async def json_orjson_async(request):
+    return HttpResponse(content=orjson.dumps(get_complex_json()), content_type="application/json")
+
+
+async def json_msgspec_async(request):
+    return HttpResponse(content=msgspec.json.encode(get_complex_json()), content_type="application/json")
 
 class CarResponse(pydantic.BaseModel):
     id: int

@@ -1,3 +1,5 @@
+import subprocess
+
 import pytest
 from tests.utils import API_CONFIGS, fetch_api_data
 
@@ -21,3 +23,30 @@ def test_endpoints(benchmark, service, endpoint):
 
     # Verify the response is valid
     assert isinstance(result, dict) or isinstance(result, list), f"Invalid response format from {service} {endpoint}"
+
+
+@pytest.mark.parametrize(
+    "service,endpoint",
+    [(service, endpoint) for service, config in API_CONFIGS.items() for endpoint in config["endpoints"]],
+)
+def test_wrk_endpoints(service, endpoint):
+    """
+    Measure performance across all active endpoints using wrk.
+    """
+    config = API_CONFIGS[service]
+    url = f"{config['base_url']}{endpoint}"
+
+    # Run wrk for 5 seconds with 10 connections and 2 threads
+    cmd = ["wrk", "-t2", "-c10", "-d5s", url]
+
+    try:
+        process = subprocess.run(cmd, capture_output=True, text=True, check=True)
+
+        # Output the results so they can be seen in the test logs
+        print(f"\nResults for {service} {endpoint}:\n{process.stdout}")
+
+        # Basic validation that wrk ran successfully and got some results
+        assert "Requests/sec:" in process.stdout
+        assert "Transfer/sec:" in process.stdout
+    except subprocess.CalledProcessError as e:
+        pytest.fail(f"wrk failed for {url} with exit code {e.returncode}: {e.stderr}")

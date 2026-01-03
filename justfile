@@ -95,6 +95,16 @@ validate *ARGS='':
 benchmark:
   cd load-testing && uv run pytest --benchmark-only --benchmark-compare --benchmark-columns 'min,max,mean,stddev,median'
 
+wrk:
+  cd load-testing && uv run pytest -k test_wrk_endpoints -s
+
 test-all:
   just test
   just benchmark
+
+# Open PostgreSQL shell
+psql:
+  docker exec -it db psql -U postgres -d django-api-frameworks
+
+shell:
+  docker exec -it django uv run python manage.py shell
