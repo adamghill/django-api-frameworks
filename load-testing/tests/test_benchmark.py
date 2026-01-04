@@ -4,16 +4,21 @@ import pytest
 from tests.utils import API_CONFIGS, fetch_api_data
 
 
-@pytest.mark.benchmark(group="api_comparison")
 @pytest.mark.parametrize(
-    "service,endpoint",
-    [(service, endpoint) for service, config in API_CONFIGS.items() for endpoint in config["endpoints"]],
+    "service,category,endpoint",
+    [
+        (service, category, endpoint)
+        for service, config in API_CONFIGS.items()
+        for category, endpoints in config["endpoints"].items()
+        for endpoint in endpoints
+    ],
 )
-def test_endpoints(benchmark, service, endpoint):
+def test_endpoints(benchmark, service, category, endpoint):
     """
-    Compare performance across all active endpoints.
-    Each endpoint is benchmarked separately for accurate comparison.
+    Compare performance across active endpoints.
+    Tests are grouped by category (orm or json) for accurate comparison.
     """
+    benchmark.group = f"api_comparison_{category}"
 
     def make_request():
         return fetch_api_data(service, endpoint)
@@ -26,12 +31,17 @@ def test_endpoints(benchmark, service, endpoint):
 
 
 @pytest.mark.parametrize(
-    "service,endpoint",
-    [(service, endpoint) for service, config in API_CONFIGS.items() for endpoint in config["endpoints"]],
+    "service,category,endpoint",
+    [
+        (service, category, endpoint)
+        for service, config in API_CONFIGS.items()
+        for category, endpoints in config["endpoints"].items()
+        for endpoint in endpoints
+    ],
 )
-def test_wrk_endpoints(service, endpoint):
+def test_wrk_endpoints(service, category, endpoint):
     """
-    Measure performance across all active endpoints using wrk.
+    Measure performance across active endpoints using wrk.
     """
     config = API_CONFIGS[service]
     url = f"{config['base_url']}{endpoint}"
@@ -43,7 +53,7 @@ def test_wrk_endpoints(service, endpoint):
         process = subprocess.run(cmd, capture_output=True, text=True, check=True)
 
         # Output the results so they can be seen in the test logs
-        print(f"\nResults for {service} {endpoint}:\n{process.stdout}")
+        print(f"\nResults for {service} ({category}) {endpoint}:\n{process.stdout}")
 
         # Basic validation that wrk ran successfully and got some results
         assert "Requests/sec:" in process.stdout

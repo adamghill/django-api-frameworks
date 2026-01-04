@@ -23,119 +23,155 @@ Ports to project mapping:
 API_CONFIGS = {
     "django-wsgi": {
         "base_url": "http://localhost:8001",
-        "endpoints": [
-            # "/api/cars-orjson-sync/",
-            # "/api/cars-msgspec/",
-            # "/api/cars-json/",
-            # "/api/cars-raw-sync/",
-            # "/api/cars-postgres-json/",
-            # "/api/cars-pydantic/",
-            # "/api/cars-generated-field/",
-            # "/api/cars-generated-field-concat/",
-            "/api/json-sync/",
-            "/api/json-orjson-sync/",
-            "/api/json-msgspec-sync/",
-            "/api/json-async/",
-            "/api/json-orjson-async/",
-            "/api/json-msgspec-async/",
-        ],
+        "endpoints": {
+            "orm": [
+                "/api/cars-orjson-sync/",
+                "/api/cars-msgspec/",
+                "/api/cars-json/",
+                "/api/cars-raw-sync/",
+                "/api/cars-postgres-json/",
+                "/api/cars-pydantic/",
+                "/api/cars-generated-field/",
+                "/api/cars-generated-field-concat/",
+            ],
+            "json": [
+                "/api/json-sync/",
+                "/api/json-orjson-sync/",
+                "/api/json-msgspec-sync/",
+                "/api/json-async/",
+                "/api/json-orjson-async/",
+                "/api/json-msgspec-async/",
+            ],
+        },
     },
     "django-asgi": {
         "base_url": "http://localhost:8002",
-        "endpoints": [
-            # "/api/cars-orjson-sync/",
-            # "/api/cars-orjson-async/",
-            # "/api/cars-streaming/",
-            # "/api/cars-asyncpg/",
-            # "/api/cars-msgspec/",
-            # "/api/cars-json/",
-            # "/api/cars-raw-sync/",
-            # "/api/cars-postgres-json/",
-            # "/api/cars-pydantic/",
-            # "/api/cars-generated-field/",
-            # "/api/cars-generated-field-concat/",
-            "/api/json-sync/",
-            "/api/json-orjson-sync/",
-            "/api/json-msgspec-sync/",
-            "/api/json-async/",
-            "/api/json-orjson-async/",
-            "/api/json-msgspec-async/",
-        ],
+        "endpoints": {
+            "orm": [
+                "/api/cars-orjson-sync/",
+                "/api/cars-orjson-async/",
+                "/api/cars-streaming/",
+                "/api/cars-asyncpg/",
+                "/api/cars-msgspec/",
+                "/api/cars-json/",
+                "/api/cars-raw-sync/",
+                "/api/cars-postgres-json/",
+                "/api/cars-pydantic/",
+                "/api/cars-generated-field/",
+                "/api/cars-generated-field-concat/",
+            ],
+            "json": [
+                "/api/json-sync/",
+                "/api/json-orjson-sync/",
+                "/api/json-msgspec-sync/",
+                "/api/json-async/",
+                "/api/json-orjson-async/",
+                "/api/json-msgspec-async/",
+            ],
+        },
     },
     "django-rsgi": {
         "base_url": "http://localhost:8003",
-        "endpoints": [
-            "/api/json-sync/",
-            "/api/json-orjson-sync/",
-            "/api/json-msgspec-sync/",
-            "/api/json-async/",
-            "/api/json-orjson-async/",
-            "/api/json-msgspec-async/",
-        ],
+        "endpoints": {
+            "orm": [],
+            "json": [
+                "/api/json-sync/",
+                "/api/json-orjson-sync/",
+                "/api/json-msgspec-sync/",
+                "/api/json-async/",
+                "/api/json-orjson-async/",
+                "/api/json-msgspec-async/",
+            ],
+        },
     },
     "django-uvicorn": {
         "base_url": "http://localhost:8004",
-        "endpoints": [
-            "/api/json-sync/",
-            "/api/json-orjson-sync/",
-            "/api/json-msgspec-sync/",
-            "/api/json-async/",
-            "/api/json-orjson-async/",
-            "/api/json-msgspec-async/",
-        ],
+        "endpoints": {
+            "orm": [],
+            "json": [
+                "/api/json-sync/",
+                "/api/json-orjson-sync/",
+                "/api/json-msgspec-sync/",
+                "/api/json-async/",
+                "/api/json-orjson-async/",
+                "/api/json-msgspec-async/",
+            ],
+        },
     },
-    # "django-ninja": {
-    #     "base_url": "http://localhost:8010",
-    #     "endpoints": [
-    #         "/api/cars/sync-with-schema/",
-    #         "/api/cars/sync-without-schema/",
-    #         "/api/cars/async-with-schema/",
-    #         "/api/cars/async-without-schema/",
-    #     ],
-    # },
-    # "django-shinobi": {
-    #     "base_url": "http://localhost:8011",
-    #     "endpoints": [
-    #         "/api/cars/sync-with-schema/",
-    #         "/api/cars/sync-without-schema/",
-    #         "/api/cars/async-with-schema/",
-    #         "/api/cars/async-without-schema/",
-    #     ],
-    # },
-    # "django-rapid": {
-    #     "base_url": "http://localhost:8012",
-    #     "endpoints": [
-    #         "/api/cars/",
-    #     ],
-    # },
-    # "django-bolt": {
-    #     "base_url": "http://localhost:8013",
-    #     "endpoints": [
-    #         "/api/cars-serialized/",
-    #         "/api/cars-dicts/",
-    #     ],
-    # },
-    # "djangorestframework": {
-    #     "base_url": "http://localhost:8014",
-    #     "endpoints": [
-    #         "/api/cars-serialized/",
-    #         "/api/cars-orjson/",
-    #         "/api/cars-dict-orjson/",
-    #     ],
-    # },
-    # "djrest2": {
-    #     "base_url": "http://localhost:8015",
-    #     "endpoints": [
-    #         "/api/cars-json/",
-    #         "/api/cars-queryset-as-dicts/",
-    #     ],
-    # },
+    "django-ninja": {
+        "base_url": "http://localhost:8010",
+        "endpoints": {
+            "orm": [
+                "/api/cars/sync-with-schema/",
+                "/api/cars/sync-without-schema/",
+                "/api/cars/async-with-schema/",
+                "/api/cars/async-without-schema/",
+            ],
+            "json": [],
+        },
+    },
+    "django-shinobi": {
+        "base_url": "http://localhost:8011",
+        "endpoints": {
+            "orm": [
+                "/api/cars/sync-with-schema/",
+                "/api/cars/sync-without-schema/",
+                "/api/cars/async-with-schema/",
+                "/api/cars/async-without-schema/",
+            ],
+            "json": [],
+        },
+    },
+    "django-rapid": {
+        "base_url": "http://localhost:8012",
+        "endpoints": {
+            "orm": [
+                "/api/cars/",
+            ],
+            "json": [],
+        },
+    },
+    "django-bolt": {
+        "base_url": "http://localhost:8013",
+        "endpoints": {
+            "orm": [
+                "/api/cars-serialized/",
+                "/api/cars-dicts/",
+            ],
+            "json": [],
+        },
+    },
+    "djangorestframework": {
+        "base_url": "http://localhost:8014",
+        "endpoints": {
+            "orm": [
+                "/api/cars-serialized/",
+                "/api/cars-orjson/",
+                "/api/cars-dict-orjson/",
+            ],
+            "json": [],
+        },
+    },
+    "djrest2": {
+        "base_url": "http://localhost:8015",
+        "endpoints": {
+            "orm": [
+                "/api/cars-json/",
+                "/api/cars-queryset-as-dicts/",
+            ],
+            "json": [],
+        },
+    },
     "fastapi": {
         "base_url": "http://localhost:8030",
-        "endpoints": [
-            # "/api/cars/",
-            "/api/json/",
-        ],
+        "endpoints": {
+            "orm": [
+                "/api/cars/",
+            ],
+            "json": [
+                "/api/json/",
+            ],
+        },
     },
 }
 

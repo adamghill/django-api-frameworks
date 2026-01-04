@@ -10,16 +10,17 @@ def test_all_apis_return_data():
     failed_endpoints = []
 
     for service, config in API_CONFIGS.items():
-        for endpoint in config["endpoints"]:
-            url = f"{config['base_url']}{endpoint}"
+        for category, endpoints in config["endpoints"].items():
+            for endpoint in endpoints:
+                url = f"{config['base_url']}{endpoint}"
 
-            try:
-                response = requests.get(url, timeout=None)
+                try:
+                    response = requests.get(url, timeout=None)
 
-                if response.status_code != 200:
-                    failed_endpoints.append(f"{url}: {response.status_code}")
-            except requests.exceptions.RequestException:
-                failed_endpoints.append(f"{url}: Connection failed")
+                    if response.status_code != 200:
+                        failed_endpoints.append(f"{url}: {response.status_code}")
+                except requests.exceptions.RequestException:
+                    failed_endpoints.append(f"{url}: Connection failed")
 
     if failed_endpoints:
         pytest.fail(f"Failed endpoints: {failed_endpoints}")
@@ -37,14 +38,15 @@ def test_api_data_consistency():
     for service, config in API_CONFIGS.items():
         service_data = {}
 
-        for endpoint in config["endpoints"]:
-            try:
-                data = fetch_api_data(service, endpoint)
+        for category, endpoints in config["endpoints"].items():
+            for endpoint in endpoints:
+                try:
+                    data = fetch_api_data(service, endpoint)
 
-                service_data[endpoint] = data
-            except Exception:
-                # Skip endpoints that fail and continue with others
-                continue
+                    service_data[endpoint] = data
+                except Exception:
+                    # Skip endpoints that fail and continue with others
+                    continue
 
         all_api_data[service] = service_data
 
@@ -78,8 +80,7 @@ def test_api_data_consistency():
             # Check if data length matches
             if len(data) != len(reference_data):
                 inconsistencies.append(
-                    f"{current_endpoint}: Length mismatch "
-                    f"(expected {len(reference_data)}, got {len(data)})"
+                    f"{current_endpoint}: Length mismatch (expected {len(reference_data)}, got {len(data)})"
                 )
                 continue
 
@@ -92,8 +93,7 @@ def test_api_data_consistency():
 
                     if ref_value != current_value:
                         inconsistencies.append(
-                            f"{current_endpoint}: Car {i} {field} mismatch "
-                            f"(expected {ref_value}, got {current_value})"
+                            f"{current_endpoint}: Car {i} {field} mismatch (expected {ref_value}, got {current_value})"
                         )
 
     if inconsistencies:
@@ -108,26 +108,25 @@ def test_api_response_structure():
     structure_issues = []
 
     for service, config in API_CONFIGS.items():
-        for endpoint in config["endpoints"]:
-            try:
-                data = fetch_api_data(service, endpoint)
+        for category, endpoints in config["endpoints"].items():
+            for endpoint in endpoints:
+                try:
+                    data = fetch_api_data(service, endpoint)
 
-                if not data:
-                    structure_issues.append(f"{service}{endpoint}: Empty response")
-                    continue
+                    if not data:
+                        structure_issues.append(f"{service}{endpoint}: Empty response")
+                        continue
 
-                # Check first car record structure
-                car = data[0]
+                    # Check first car record structure
+                    car = data[0]
 
-                # Check required fields
-                missing_required = [field for field in FIELDS if field not in car]
+                    # Check required fields
+                    missing_required = [field for field in FIELDS if field not in car]
 
-                if missing_required:
-                    structure_issues.append(
-                        f"{service}{endpoint}: Missing required fields: {missing_required}"
-                    )
-            except Exception as e:
-                structure_issues.append(f"{service}{endpoint}: Error - {str(e)}")
+                    if missing_required:
+                        structure_issues.append(f"{service}{endpoint}: Missing required fields: {missing_required}")
+                except Exception as e:
+                    structure_issues.append(f"{service}{endpoint}: Error - {str(e)}")
 
     if structure_issues:
         pytest.fail("Structure issues found:\n" + "\n".join(structure_issues))
