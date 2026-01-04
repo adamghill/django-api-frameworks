@@ -12,6 +12,8 @@ urlpatterns = [
     path("cars-raw-sync/", views.cars_raw_sync),
     path("cars-postgres-json/", views.cars_postgres_json),
     path("cars-pydantic/", views.cars_pydantic),
+    path("cars-generated-field/", views.cars_generated_field),
+    path("cars-generated-field-concat/", views.cars_generated_field_concat),
     path("json-sync/", views.json_sync),
     path("json-orjson-sync/", views.json_orjson_sync),
     path("json-msgspec-sync/", views.json_msgspec_sync),

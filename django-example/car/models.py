@@ -1,5 +1,6 @@
 from django.db import models
-from django.db.models import F
+from django.db.models import F, GeneratedField
+from django.db.models.functions import JSONObject
 
 
 class CarQuerySet(models.QuerySet):
@@ -34,6 +35,16 @@ class CarModel(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    json_data = GeneratedField(
+        expression=JSONObject(
+            car_model_name=F("name"),
+            car_model_year=F("year"),
+            color=F("color"),
+        ),
+        output_field=models.JSONField(),
+        db_persist=True,
+    )
+
 
 class Car(models.Model):
     vin = models.CharField(max_length=17)
@@ -43,3 +54,14 @@ class Car(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     objects = CarQuerySet.as_manager()
+
+    json_data = GeneratedField(
+        expression=JSONObject(
+            id=F("id"),
+            vin=F("vin"),
+            owner=F("owner"),
+            car_model_id=F("model_id"),
+        ),
+        output_field=models.JSONField(),
+        db_persist=True,
+    )

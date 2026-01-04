@@ -4,8 +4,10 @@ from functools import lru_cache
 import msgspec
 import orjson
 import pydantic
+from django.contrib.postgres.aggregates import JSONBAgg
 from django.db import connection
-from django.db.models import F
+from django.db.models import CharField, F, Func, JSONField, TextField
+from django.db.models.functions import Cast, JSONObject
 from django.http import HttpResponse, StreamingHttpResponse
 
 from car.asyncpg_manager import AsyncpgManager
@@ -14,7 +16,6 @@ from car.models import Car
 
 @lru_cache
 def get_complex_json():
-    print("Generating complex JSON...")
     results = []
 
     for idx in range(1, 10000):
@@ -57,6 +58,7 @@ async def json_orjson_async(request):
 
 async def json_msgspec_async(request):
     return HttpResponse(content=msgspec.json.encode(get_complex_json()), content_type="application/json")
+
 
 class CarResponse(pydantic.BaseModel):
     id: int
@@ -305,3 +307,117 @@ def cars_postgres_json(request):
         result,
         content_type="application/json",
     )
+
+
+def cars_postgres_json_orm(request):
+    """
+    Offload JSON generation to Postgres using Django ORM.
+    """
+
+    class ToChar(Func):
+        function = "to_char"
+        template = "%(function)s(%(expressions)s AT TIME ZONE 'UTC', 'YYYY-MM-DD\"T\"HH24:MI:SS.US\"Z\"')"
+        output_field = CharField()
+
+    formatted_created_at = ToChar(F("created_at"))
+    formatted_updated_at = ToChar(F("updated_at"))
+
+    data = Car.objects.select_related("model").aggregate(
+        result=Cast(
+            JSONObject(
+                results=JSONBAgg(
+                    JSONObject(
+                        id=F("id"),
+                        vin=F("vin"),
+                        owner=F("owner"),
+                        created_at=formatted_created_at,
+                        updated_at=formatted_updated_at,
+                        car_model_id=F("model_id"),
+                        car_model_name=F("model__name"),
+                        car_model_year=F("model__year"),
+                        color=F("model__color"),
+                    )
+                )
+            ),
+            output_field=TextField(),
+        )
+    )
+
+    return HttpResponse(
+        data["result"],
+        content_type="application/json",
+    )
+
+
+def cars_generated_field(request):
+    """
+    Returns a list of cars using the GeneratedField on the model.
+    Note: GeneratedField cannot include joined fields or auto-updated timestamps,
+    so we merge those in the query.
+    """
+
+    class ToChar(Func):
+        function = "to_char"
+        template = "%(function)s(%(expressions)s AT TIME ZONE 'UTC', 'YYYY-MM-DD\"T\"HH24:MI:SS.US\"Z\"')"
+        output_field = CharField()
+
+    formatted_created_at = ToChar(F("created_at"))
+    formatted_updated_at = ToChar(F("updated_at"))
+
+    data = Car.objects.select_related("model").aggregate(
+        results=JSONBAgg(
+            JSONObject(
+                # Spread the json_data GeneratedField
+                id=F("json_data__id"),
+                vin=F("json_data__vin"),
+                owner=F("json_data__owner"),
+                created_at=formatted_created_at,
+                updated_at=formatted_updated_at,
+                car_model_id=F("json_data__car_model_id"),
+                # Add the joined model fields
+                car_model_name=F("model__name"),
+                car_model_year=F("model__year"),
+                color=F("model__color"),
+            )
+        )
+    )
+
+    return HttpResponse(content=msgspec.json.encode(data), content_type="application/json")
+
+
+def cars_generated_field_concat(request):
+    """
+    Returns a list of cars using GeneratedFields from both Car and CarModel.
+    Uses Postgres || operator to merge the two JSON objects.
+    """
+
+    class ToChar(Func):
+        function = "to_char"
+        template = "%(function)s(%(expressions)s AT TIME ZONE 'UTC', 'YYYY-MM-DD\"T\"HH24:MI:SS.US\"Z\"')"
+        output_field = CharField()
+
+    class JSONConcat(Func):
+        """Postgres || operator for JSONB concatenation"""
+
+        function = ""
+        template = "(%(expressions)s)"
+        arg_joiner = " || "
+        output_field = JSONField()
+
+    formatted_created_at = ToChar(F("created_at"))
+    formatted_updated_at = ToChar(F("updated_at"))
+
+    results = Car.objects.select_related("model").aggregate(
+        results=JSONBAgg(
+            JSONConcat(
+                F("json_data"),
+                F("model__json_data"),
+                JSONObject(
+                    created_at=formatted_created_at,
+                    updated_at=formatted_updated_at,
+                ),
+            ),
+        )
+    )
+
+    return HttpResponse(content=msgspec.json.encode(results), content_type="application/json")
