@@ -31,5 +31,3 @@ COPY --from=builder /app/.venv /app/.venv
 ENV PATH="/app/.venv/bin:$PATH"
 
 COPY ./django-bolt-example/ .
-
-CMD ["python", "manage.py", "runbolt", "--host", "0.0.0.0", "--port", "8000"]

@@ -199,7 +199,7 @@ services:
       - DEBUG=False
     volumes:
       - ./fastapi-example:/app
-    command: bash ./wait_for_db.sh uv run fastapi run main.py --host 0.0.0.0 --port 8000
+    command: uv run fastapi run main.py --host 0.0.0.0 --port 8000
     depends_on:
       - db
     networks:

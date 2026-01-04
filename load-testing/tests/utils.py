@@ -133,7 +133,8 @@ API_CONFIGS = {
     "fastapi": {
         "base_url": "http://localhost:8030",
         "endpoints": [
-            "/api/cars/",
+            # "/api/cars/",
+            "/api/json/",
         ],
     },
 }
