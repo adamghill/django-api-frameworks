@@ -29,7 +29,7 @@ services:
       - DEBUG=False
     volumes:
       - ./django-example:/app
-    command: bash ./wait_for_db.sh uv run granian --interface wsgi --loop uvloop --workers 4 --no-ws config.wsgi:application --host 0.0.0.0 --port 8000 --reload
+    command: bash ./wait_for_db.sh uv run granian --interface wsgi --loop uvloop --workers 4 --no-ws --backpressure 32 config.wsgi:application --host 0.0.0.0 --port 8000 --reload
     depends_on:
       - db
     networks:
@@ -46,7 +46,7 @@ services:
       - DEBUG=False
     volumes:
       - ./django-example:/app
-    command: bash ./wait_for_db.sh uv run granian --interface asgi --loop uvloop --workers 4 --no-ws config.asgi:application --host 0.0.0.0 --port 8000 --reload
+    command: bash ./wait_for_db.sh uv run granian --interface asgi --loop uvloop --workers 4 --no-ws --backpressure 32 config.asgi:application --host 0.0.0.0 --port 8000 --reload
     depends_on:
       - db
     networks:
@@ -63,7 +63,7 @@ services:
       - DEBUG=False
     volumes:
       - ./django-example:/app
-    command: bash ./wait_for_db.sh uv run granian --interface rsgi --loop uvloop --workers 4 --no-ws config.rsgi:application --host 0.0.0.0 --port 8000 --reload
+    command: bash ./wait_for_db.sh uv run granian --interface rsgi --loop uvloop --workers 4 --no-ws --backpressure 32 config.rsgi:application --host 0.0.0.0 --port 8000 --reload
     depends_on:
       - db
     networks:
