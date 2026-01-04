@@ -68,17 +68,17 @@ clean:
 # Run Django migrations
 migrate:
   # Only need to run this in one container since they all share the same database
-  docker exec -it django uv run python manage.py migrate
+  docker exec -it django-wsgi uv run python manage.py migrate
 
 # Populate Django database
 populate:
   # Only need to run this in one container since they all share the same database
   just migrate
-  docker exec -it django uv run python manage.py populate
+  docker exec -it django-wsgi uv run python manage.py populate
 
 # Run pytest tests
 test *ARGS='':
-  docker exec -it django uv run pytest -q
+  docker exec -it django-wsgi uv run pytest -q
   docker exec -it django-bolt uv run pytest -q
   docker exec -it django-ninja uv run pytest -q
   docker exec -it django-rapid uv run pytest -q
@@ -107,4 +107,4 @@ psql:
   docker exec -it db psql -U postgres -d django-api-frameworks
 
 shell:
-  docker exec -it django uv run python manage.py shell
+  docker exec -it django-wsgi uv run python manage.py shell
